@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ecommerce-qa
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sanR-Dtest/3tier-gitops-demo
+    targetRevision: main
+    path: charts/ecommerce
+    helm:
+      releaseName: ecommerce-qa
+      values: |
+        environment: qa
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ecommerce
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

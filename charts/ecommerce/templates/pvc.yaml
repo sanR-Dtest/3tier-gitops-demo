@@ -1,0 +1,17 @@
+{{- if .Values.mysql.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "ecommerce.fullname" . }}-mysql-pvc
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "ecommerce.labels" . | nindent 4 }}
+    component: mysql
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.mysql.persistence.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.mysql.persistence.size }}
+{{- end }}

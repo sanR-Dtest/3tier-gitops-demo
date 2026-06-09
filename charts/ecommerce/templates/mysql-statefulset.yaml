@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "ecommerce.fullname" . }}-mysql
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "ecommerce.labels" . | nindent 4 }}
+    component: mysql
+spec:
+  serviceName: {{ include "ecommerce.fullname" . }}-mysql
+  replicas: {{ .Values.mysql.replicas }}
+  selector:
+    matchLabels:
+      {{- include "ecommerce.selectorLabels" . | nindent 6 }}
+      component: mysql
+  template:
+    metadata:
+      labels:
+        {{- include "ecommerce.selectorLabels" . | nindent 8 }}
+        component: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
+        imagePullPolicy: {{ .Values.mysql.image.pullPolicy }}
+        ports:
+        - name: mysql
+          containerPort: {{ .Values.mysql.service.targetPort }}
+          protocol: TCP
+        envFrom:
+        - secretRef:
+            name: {{ include "ecommerce.fullname" . }}-secret
+        resources:
+          {{- toYaml .Values.mysql.resources | nindent 12 }}
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD"
+          initialDelaySeconds: 5
+          periodSeconds: 5
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: {{ .Values.mysql.persistence.storageClassName }}
+      resources:
+        requests:
+          storage: {{ .Values.mysql.persistence.size }}
