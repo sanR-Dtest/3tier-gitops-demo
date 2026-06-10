@@ -3,7 +3,8 @@ environment: prod
 
 frontend:
   image:
-    repository: nginx
+    # repository: nginx
+    repository: sbpak/myapp-frontend
     tag: latest
     pullPolicy: IfNotPresent
   replicas: 2
@@ -21,7 +22,7 @@ frontend:
 
 backend:
   image:
-    repository: myapp/backend
+    repository: sbpak/myapp-backend
     tag: latest
     pullPolicy: IfNotPresent
   replicas: 2
