@@ -3,8 +3,8 @@ environment: prod
 
 frontend:
   image:
-    # repository: nginx
-    repository: sbpak/myapp-frontend
+    repository: nginx:latest
+    # repository: sbpak/myapp-frontend
     tag: latest
     pullPolicy: IfNotPresent
   replicas: 2
@@ -22,7 +22,7 @@ frontend:
 
 backend:
   image:
-    repository: sbpak/myapp-backend
+    repository: mendhak/http-https-echo:31
     tag: latest
     pullPolicy: IfNotPresent
   replicas: 2
