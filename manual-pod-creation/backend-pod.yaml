@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+  name: ecommerce-dev-backend-manual
+spec:
+  containers:
+  - envFrom:
+    - configMapRef:
+        name: ecommerce-dev-config
+    - secretRef:
+        name: ecommerce-dev-secret
+    image: mendhak/http-https-echo:latest
+    imagePullPolicy: IfNotPresent
+    name: backend
+    ports:
+    - containerPort: 3000
+      name: http
+      protocol: TCP
+    resources:
+      limits:
+        cpu: "1"
+        memory: 1Gi
+      requests:
+        cpu: 200m
+        memory: 256Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-bzsfk
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  imagePullSecrets:
+  - name: regcred
+  nodeName: worker-43
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  volumes:
+  - name: kube-api-access-bzsfk
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
