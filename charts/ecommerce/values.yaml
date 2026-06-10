@@ -51,7 +51,7 @@ mysql:
   persistence:
     enabled: true
     size: 10Gi
-    storageClassName: standard
+    storageClassName: open-storage
   resources:
     requests:
       cpu: 500m
