@@ -3,7 +3,7 @@ environment: prod
 
 frontend:
   image:
-    repository: nginx:latest
+    repository: nginx
     # repository: sbpak/myapp-frontend
     tag: latest
     pullPolicy: IfNotPresent
