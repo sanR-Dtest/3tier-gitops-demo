@@ -11,6 +11,7 @@ spec:
     - secretRef:
         name: ecommerce-dev-secret
     image: mendhak/http-https-echo:latest
+    # image: nginx:latest
     imagePullPolicy: IfNotPresent
     name: backend
     ports:

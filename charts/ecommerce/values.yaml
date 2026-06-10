@@ -7,7 +7,7 @@ frontend:
     # repository: sbpak/myapp-frontend
     tag: latest
     pullPolicy: IfNotPresent
-  replicas: 2
+  replicas: 4
   service:
     type: ClusterIP
     port: 80
@@ -25,7 +25,7 @@ backend:
     repository: mendhak/http-https-echo
     tag: latest
     pullPolicy: IfNotPresent
-  replicas: 2
+  replicas: 3
   service:
     type: ClusterIP
     port: 3000
