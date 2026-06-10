@@ -35,7 +35,8 @@ spec:
             name: {{ include "ecommerce.fullname" . }}-secret
         resources:
           {{- toYaml .Values.frontend.resources | nindent 12 }}
-        {% comment %} livenessProbe:
+        {{/*
+        livenessProbe:
           httpGet:
             path: /
             port: http
@@ -46,4 +47,5 @@ spec:
             path: /
             port: http
           initialDelaySeconds: 5
-          periodSeconds: 5 {% endcomment %}
+          periodSeconds: 5
+        */}}
