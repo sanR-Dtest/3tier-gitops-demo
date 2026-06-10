@@ -1,0 +1,73 @@
+pipeline {
+    agent {
+        kubernetes {
+            yaml '''
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins: argocd-deploy-prod
+spec:
+  serviceAccountName: jenkins-argocd-deployer
+  containers:
+  - name: jnlp
+    image: jenkins/inbound-agent:latest-jdk17
+    tty: true
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command: ["sleep"]
+    args: ["infinity"]
+    tty: true
+'''
+        }
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timeout(time: 15, unit: 'MINUTES')
+        disableConcurrentBuilds()
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Deploy ArgoCD Application (Prod)') {
+            steps {
+                container('kubectl') {
+                    // In-cluster auth: kubectl uses the pod ServiceAccount token automatically.
+                    sh '''
+                        kubectl cluster-info
+                        kubectl apply -f argocd/application-prod.yaml
+                    '''
+                }
+            }
+        }
+
+        stage('Verify ArgoCD Application') {
+            steps {
+                container('kubectl') {
+                    sh '''
+                        kubectl get application ecommerce-prod -n argocd
+                        kubectl wait --for=condition=Synced --timeout=300s application/ecommerce-prod -n argocd || true
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'ArgoCD Application CR applied. ArgoCD will sync the app from Git.'
+        }
+        failure {
+            echo 'Failed to apply ArgoCD Application. Check RBAC and that namespace argocd exists.'
+        }
+        cleanup {
+            cleanWs()
+        }
+    }
+}

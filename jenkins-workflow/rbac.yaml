@@ -1,0 +1,32 @@
+# Apply once on your kubeadm cluster before running the Jenkins pipeline.
+# Replace namespace "jenkins" if your Jenkins installation uses a different namespace.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: jenkins-argocd-deployer
+  namespace: jenkins
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: jenkins-argocd-deployer
+  namespace: argocd
+rules:
+  - apiGroups: ["argoproj.io"]
+    resources: ["applications"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jenkins-argocd-deployer
+  namespace: argocd
+subjects:
+  - kind: ServiceAccount
+    name: jenkins-argocd-deployer
+    namespace: jenkins
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: jenkins-argocd-deployer
