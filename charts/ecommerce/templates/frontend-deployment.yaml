@@ -18,6 +18,8 @@ spec:
         {{- include "ecommerce.selectorLabels" . | nindent 8 }}
         component: frontend
     spec:
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecret }}
       containers:
       - name: frontend
         image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
@@ -29,6 +31,8 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ include "ecommerce.fullname" . }}-config
+        - secretRef:
+            name: {{ include "ecommerce.fullname" . }}-secret
         resources:
           {{- toYaml .Values.frontend.resources | nindent 12 }}
         livenessProbe:

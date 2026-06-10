@@ -18,6 +18,8 @@ spec:
         {{- include "ecommerce.selectorLabels" . | nindent 8 }}
         component: backend
     spec:
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecret }}
       containers:
       - name: backend
         image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
