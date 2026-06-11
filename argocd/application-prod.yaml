@@ -11,8 +11,9 @@ spec:
     path: charts/ecommerce
     helm:
       releaseName: ecommerce-prod
-      values: |
-        environment: prod
+      valueFiles:
+      - values.yaml
+      - ../../environments/prod-values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: ecommerce
