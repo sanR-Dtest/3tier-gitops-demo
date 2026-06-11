@@ -11,7 +11,7 @@ spec:
   serviceAccountName: jenkins-argocd-deployer
   containers:
   - name: jnlp
-    image: jenkins/inbound-agent:latest-jdk17
+    image: jenkins/inbound-agent:latest-jdk21
     tty: true
   - name: kubectl
     image: bitnami/kubectl:latest
