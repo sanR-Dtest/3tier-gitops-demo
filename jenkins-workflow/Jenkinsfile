@@ -18,6 +18,8 @@ spec:
     image: bitnami/kubectl:latest
     imagePullPolicy: Always
     command:
+    - /bin/sh
+    - -c
     - cat
     tty: true
 '''
