@@ -9,6 +9,8 @@ metadata:
     jenkins: argocd-deploy-prod
 spec:
   serviceAccountName: jenkins-argocd-deployer
+  securityContext:
+    fsGroup: 1000
   containers:
   - name: jnlp
     image: jenkins/inbound-agent:latest-jdk21
@@ -18,10 +20,13 @@ spec:
     image: bitnami/kubectl:latest
     imagePullPolicy: Always
     command:
-    - /bin/sh
-    - -c
-    - cat
+    - sleep
+    args:
+    - infinity
     tty: true
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
 '''
         }
     }
