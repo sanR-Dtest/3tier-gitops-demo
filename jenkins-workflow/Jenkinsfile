@@ -12,11 +12,13 @@ spec:
   containers:
   - name: jnlp
     image: jenkins/inbound-agent:latest-jdk21
+    imagePullPolicy: Always
     tty: true
   - name: kubectl
     image: bitnami/kubectl:latest
-    command: ["sleep"]
-    args: ["infinity"]
+    imagePullPolicy: Always
+    command:
+    - cat
     tty: true
 '''
         }
