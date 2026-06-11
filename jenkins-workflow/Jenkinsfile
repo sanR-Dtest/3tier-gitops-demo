@@ -66,8 +66,8 @@ spec:
         failure {
             echo 'Failed to apply ArgoCD Application. Check RBAC and that namespace argocd exists.'
         }
-        cleanup {
-            cleanWs()
+        always {
+            deleteDir()
         }
     }
 }
