@@ -47,9 +47,9 @@ spec:
         stage('Deploy ArgoCD Application (Prod)') {
             steps {
                 container('kubectl') {
-                    // In-cluster auth: kubectl uses the pod ServiceAccount token automatically.
+                    // In-cluster auth: pod ServiceAccount token (scoped to argocd Applications only).
                     sh '''
-                        kubectl cluster-info
+                        kubectl auth can-i create applications.argoproj.io -n argocd
                         kubectl apply -f argocd/application-prod.yaml
                     '''
                 }
